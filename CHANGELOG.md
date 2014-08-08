@@ -1,12 +1,10 @@
 # Changelog
 
-## July 30, commit 5
+## Aug 8, commit 2
 
-  * `mkdir -p app/models` to create the models dir.
-  * Created `spec/models/training_path_spec.rb`
-  * Moved most validation related spects into the TrainingPath unit specs
-  * Created the barest skeleton of the TrainingPath class
-  * Added a line to `spec_helper.rb` to require all classes in the `app` directory
+  * Integrated Activerecord
+  * Created integration and model tests for adding sports to the database
+  * Wrote functionality to pass tests
 
 ## Aug 5, commit 1
 
