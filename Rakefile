@@ -5,14 +5,6 @@ require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec)
 
 desc "Run tests"
-task :default => :spec
-#!/usr/bin/env ruby
-# -*- ruby -*-
-
-require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec)
-
-desc "Run tests"
 task :default => [ 'db:test:prepare', :spec ]
 
 require_relative 'lib/environment'

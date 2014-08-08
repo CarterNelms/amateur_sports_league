@@ -11,5 +11,5 @@ end
 
 puts IO.readlines('league.txt')
 
-controller = SportsController.new()
-controller.list
+controller = SessionController.new()
+controller.begin

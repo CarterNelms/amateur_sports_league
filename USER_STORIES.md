@@ -30,7 +30,7 @@ Acceptance Criteria:
 
 As an admin
 In order to manage existing sports
-I want to be able to edit them or remove them from my leage
+I want to be able to edit them or remove them from my league
 
 Acceptance Criteria:
 * Admin chooses a sport from the main menu
