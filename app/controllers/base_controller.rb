@@ -4,6 +4,30 @@ class BaseController
     Router.send("navigate_#{type_name_plural}_menu", *[self, command])
   end
 
+  def list
+    # puts @parent.name if @parent
+    if @parent
+      puts <<EOS
+==============
+#{@parent.name}
+==============
+EOS
+    end
+    puts <<EOS
+==============
+#{type_name_plural.upcase}
+==============
+EOS
+
+    items.each_with_index do |item, index|
+      puts "#{index + 1}. #{item.name}"
+    end
+  end
+
+  def get_by_index(index)
+    items[index-1] if index.between?(1, items.size)
+  end
+
   private
 
   def model 
@@ -35,21 +59,9 @@ class BaseController
     end
   end
 
-  def list
-    puts <<EOS
-==============
-#{type_name_plural.upcase}
-==============
-EOS
-
-    items.each_with_index do |item, index|
-      puts "#{index + 1}. #{item.name}"
-    end
-  end
-
   def edit
     puts "Which #{type_name} do you want to edit? (Number or Name)"
-    item = get_item_from_user
+    item = get_from_user
     if item
       name = item.name
       puts "Which attribute of #{name} would you like to change? (Number)"
@@ -77,7 +89,7 @@ EOS
 
   def delete
     puts "Which #{type_name} do you want to delete? (Number)"
-    item = get_item_from_user
+    item = get_from_user
     if item
       puts "#{item.name}: Are your SURE you wish to PERMANENTLY DELETE this #{type_name}? (y/N)"
       input = clean_gets.downcase
@@ -90,19 +102,18 @@ EOS
     end
   end
 
-  def get_item_from_user
+  def get_from_user
     input = clean_gets
     item = model.find_by(name: input)
-    # item = get_item_by_name(input)
+    # item = get_by_name(input)
     if item.nil?
-      index = input.to_i
-      item = items[index-1] if index.between?(1, items.size)
+      item = get_by_index(input.to_i)
     end
     puts "That is not a valid selection." if item.nil?
     item
   end
 
-  # def get_item_by_name(name)
+  # def get_by_name(name)
   #   model.find_by(name: name)
   # end
 

@@ -1,5 +1,5 @@
 class Sport < ActiveRecord::Base
-  has_many :team
+  has_many :teams
 
   validates_presence_of :name
 

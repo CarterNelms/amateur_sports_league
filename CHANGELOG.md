@@ -1,5 +1,10 @@
 # Changelog
 
+## Aug 11, commit 4
+
+  * Fleshed out and cleaned up the base controller class
+  * Added minimum and maximum team sizes and minimum and maximum number of teams to sports
+
 ## Aug 10, commit 3
 
   * Created a base controller for all model controlelrs to inherit from
