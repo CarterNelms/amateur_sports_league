@@ -11,10 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 201408071715) do
+ActiveRecord::Schema.define(version: 201408111106) do
 
   create_table "sports", force: true do |t|
-    t.string "name"
+    t.string  "name"
+    t.integer "minimum_team_size",       default: 0
+    t.integer "maximum_team_size",       default: 100
+    t.integer "minimum_number_of_teams", default: 0
+    t.integer "maximum_number_of_teams", default: 100
   end
 
 end

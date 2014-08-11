@@ -1,5 +1,10 @@
 # Changelog
 
+## Aug 10, commit 3
+
+  * Created a base controller for all model controlelrs to inherit from
+  * Moved most functionality of existing sports controller to the base controller
+
 ## Aug 8, commit 2
 
   * Integrated Activerecord

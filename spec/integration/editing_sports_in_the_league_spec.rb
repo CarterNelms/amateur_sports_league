@@ -1,7 +1,7 @@
 RSpec.describe "Editing existing sports in the league", :integration do
   context "with valid input" do
     let!(:sport){Sport.create(name: "Baseball")}
-    let!(:output){run_program_with_input("edit", "1", "name", "Football", "end")}
+    let!(:output){run_program_with_input("edit", "1", "1", "Football", "end")}
 
     it "edits the sport in the league's database" do
       expect(Sport.count).to eq(1)
