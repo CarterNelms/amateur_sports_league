@@ -1,12 +1,8 @@
 class Router
   def self.navigate_sports_menu(controller, command)
     case command
-    when "add"
-      controller.add
-    when "edit"
-      controller.edit
-    when "delete"
-      controller.delete
+    when "add", "edit", "delete", "list"
+      controller.send(command)
     when /\d+/
       controller.view(command.to_i)
       # controller = TeamController.new()
