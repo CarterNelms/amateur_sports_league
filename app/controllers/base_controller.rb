@@ -46,7 +46,7 @@ EOS
     puts "What #{type_name} do you want to add?"
     name = clean_gets
     parameters = {name: name}
-    attributes.each{ |attribute|
+    attributes(false).each{ |attribute|
       puts "#{attribute_formatted(attribute)}:"
       value = clean_gets
       parameters.merge!(attribute.to_sym => value) if value.size > 0
@@ -64,12 +64,14 @@ EOS
     item = get_from_user
     if item
       name = item.name
-      puts "Which attribute of #{name} would you like to change? (Number)"
-      attributes_formatted(false).each_with_index{ |attribute, index|
+      puts "Which attribute of #{name} would you like to change? (Number or Name)"
+      attributes_formatted.each_with_index{ |attribute, index|
         puts "#{index+1}. #{attribute}"
       }
-      attribute_index = clean_gets.to_i
-      attribute = attributes(false)[attribute_index-1]
+      input = clean_gets
+      attribute = attributes_formatted.include?(input) ? input : nil
+      attribute ||= attributes[input.to_i-1] if input.to_i.between?(1,attributes.size)
+      attribute = attribute_unformatted(attribute.to_s)
       if item.respond_to?(attribute)
         attribute_name = attribute_formatted(attribute, false)
         old_value = item.send(attribute)
@@ -88,7 +90,7 @@ EOS
   end
 
   def delete
-    puts "Which #{type_name} do you want to delete? (Number)"
+    puts "Which #{type_name} do you want to delete? (Number or Name)"
     item = get_from_user
     if item
       puts "#{item.name}: Are your SURE you wish to PERMANENTLY DELETE this #{type_name}? (y/N)"
@@ -128,14 +130,18 @@ EOS
     attribute
   end
 
-  def attributes(should_ignore_name=true)
-    disregarded_attributes = ['id']
-    disregarded_attributes.concat(['name']) if should_ignore_name
-    value = model.column_names.select{|attribute| !disregarded_attributes.include?(attribute)}
+  def attribute_unformatted(attribute)
+    attribute.gsub(/\s/, '_').downcase
   end
 
-  def attributes_formatted(should_ignore_name=true)
-    attributes(should_ignore_name).map{|attribute| attribute_formatted(attribute)}
+  def attributes(should_include_name=true)
+    disregarded_attributes = ['id']
+    disregarded_attributes.concat(['name']) unless should_include_name
+    value = model.column_names.select{|attribute| !(disregarded_attributes.include?(attribute) || attribute.include?("_id"))}
+  end
+
+  def attributes_formatted(should_include_name=true)
+    attributes(should_include_name).map{|attribute| attribute_formatted(attribute)}
   end
 
 end

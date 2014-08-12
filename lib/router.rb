@@ -19,7 +19,7 @@ class Router
       controller.send(command)
     when /\d+/
       sport = controller.get_by_index(command.to_i)
-      controller = TeamsController.new(sport)
+      # controller = PlayersController.new(sport)
       controller.list
     else
       puts "I don't know the '#{command}' command."

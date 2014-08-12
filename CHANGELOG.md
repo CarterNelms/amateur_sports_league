@@ -1,5 +1,12 @@
 # Changelog
 
+## Aug 12, commit 5
+
+  * Debugged existing base controller functionality
+  * Allowed user to select existing database entries by name or by index (previously allowed index only)
+  * Created teams table and model
+  * Added references to teams and sports tables
+
 ## Aug 11, commit 4
 
   * Fleshed out and cleaned up the base controller class
