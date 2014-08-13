@@ -15,7 +15,7 @@ RSpec.describe Sport do
     expect(Sport.last.name).to eq("Airsoft")
   end
 
-  it "should be able to delete a sport from the batabase" do
+  it "should be able to delete a sport from the database" do
     a.destroy
     expect(Sport.count).to eq(0)
   end

@@ -1,5 +1,11 @@
 # Changelog
 
+## Aug 12, commit 6
+  
+  * Created players table and model
+  * Repaired schema for sports, teams, and players
+  * Created memberships to link players and teams
+
 ## Aug 12, commit 5
 
   * Debugged existing base controller functionality

@@ -6,26 +6,66 @@ class BaseController
 
   def list
     # puts @parent.name if @parent
+    puts <<EOS
+==============
+EOS
     if @parent
       puts <<EOS
-==============
 #{@parent.name}
-==============
 EOS
     end
     puts <<EOS
-==============
 #{type_name_plural.upcase}
 ==============
 EOS
-
     items.each_with_index do |item, index|
-      puts "#{index + 1}. #{item.name}"
+      puts "#{index + 1}. #{attributes.include?("name") ? item.name : "#{item.first_name} #{item.last_name}"}"
     end
   end
 
   def get_by_index(index)
-    items[index-1] if index.between?(1, items.size)
+    selectable_items = items
+    selectable_items[index-1] if index.between?(1, selectable_items.size)
+  end
+
+  def add(name=nil)
+    if name.nil?
+      puts "What #{type_name} do you want to add?"
+      name = clean_gets
+    end
+    unique_title_attribute_name = attributes.include?('username') ? :username : :name
+    parameters = {unique_title_attribute_name => name}
+    attributes(false).each{ |attribute|
+      if ["is_"].include?(attribute[0,3])
+        case attribute[3,attribute.length-1]
+        when "male"
+          puts "Male(1) or Female(2):"
+          input = clean_gets
+          case input.downcase
+          when 'm', 'male', '1'
+            value = "1"
+          when 'f', 'female', '2'
+            value = "0"
+          else
+            value = ""
+          end
+        end
+      else
+        puts "#{attribute_formatted(attribute)}:"
+        value = clean_gets
+      end
+      parameters.merge!(attribute.to_sym => value) if value.size > 0
+    }
+    parameters.merge!(@parent.class.name.downcase.to_sym => @parent) if @parent
+    item = model.create(parameters)
+    # item.instance_variable_set("@#{parent.class.name.downcase}", @parent) if @parent
+    if item.new_record?
+      puts item.errors.full_messages
+      false
+    else
+      puts "#{name} has been added to the list of #{type_name_plural} in the league"
+      item
+    end
   end
 
   private
@@ -40,23 +80,6 @@ EOS
 
   def type_name_plural
     (begin self.class::TYPE_NAME_PLURAL rescue "#{type_name}#{'jsxz'.include?(type_name[-1]) ? 'e' : ''}s" end).downcase
-  end
-
-  def add
-    puts "What #{type_name} do you want to add?"
-    name = clean_gets
-    parameters = {name: name}
-    attributes(false).each{ |attribute|
-      puts "#{attribute_formatted(attribute)}:"
-      value = clean_gets
-      parameters.merge!(attribute.to_sym => value) if value.size > 0
-    }
-    item = model.create(parameters)
-    if item.new_record?
-      puts item.errors.full_messages
-    else
-      puts "#{name} has been added to the list of #{type_name_plural} in the league"
-    end
   end
 
   def edit
@@ -95,7 +118,7 @@ EOS
     if item
       puts "#{item.name}: Are your SURE you wish to PERMANENTLY DELETE this #{type_name}? (y/N)"
       input = clean_gets.downcase
-      if input == 'y'
+      if input == 'y' || input == 'yes'
         item.destroy
         puts "#{item.name} has been deleted."
       else
@@ -106,7 +129,12 @@ EOS
 
   def get_from_user
     input = clean_gets
-    item = model.find_by(name: input)
+    parameters = {name: input}
+    if @parent
+      parent_id_name = "#{@parent.class.name.downcase}_id"
+      parameters.merge!(parent_id_name => @parent.id)
+    end
+    item = model.find_by(parameters)
     # item = get_by_name(input)
     if item.nil?
       item = get_by_index(input.to_i)
@@ -120,8 +148,16 @@ EOS
   # end
 
   def items
-    # @items ||= model.all
-    model.all.sort_by{|item| item.name.downcase}
+    items_to_return = items_all
+    if @parent
+      parent_id_name = "#{@parent.class.name.downcase}_id"
+      items_to_return.select!{|item| item.send(parent_id_name) == @parent.id}
+    end
+    items_to_return
+  end
+
+  def items_all
+    model.all.sort_by{|item| attributes.include?("last_name") ? item.last_name : item.name}
   end
 
   def attribute_formatted(attribute, should_capitalize=true)
@@ -136,7 +172,7 @@ EOS
 
   def attributes(should_include_name=true)
     disregarded_attributes = ['id']
-    disregarded_attributes.concat(['name']) unless should_include_name
+    disregarded_attributes.concat(['name', 'username']) unless should_include_name
     value = model.column_names.select{|attribute| !(disregarded_attributes.include?(attribute) || attribute.include?("_id"))}
   end
 

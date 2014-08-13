@@ -26,4 +26,24 @@ class Router
     end
     controller
   end
+
+  def self.navigate_session(command)
+    did_process_command = true
+    case command.downcase
+    when "sport", "sports"
+      controller = SportsController.new()
+    when "team", "teams"
+      controller = TeamsController.new()
+    when "player", "players"
+      controller = PlayersController.new()
+    else
+      did_process_command = false
+    end
+    if did_process_command
+      controller.list
+      controller
+    else
+      false
+    end
+  end
 end

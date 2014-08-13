@@ -4,7 +4,7 @@ class TeamsController < BaseController
 
   MODEL = Team
 
-  def initialize(sport)
+  def initialize(sport=nil)
     @parent = sport
   end
 

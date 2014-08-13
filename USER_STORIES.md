@@ -13,8 +13,53 @@ Player can join a team (1 team per sport)
 * Admins: A league administrator. He decides which sports are included, how many teams are allowed, etc.
 * Team Captains: The manager for an individual team.
 * Players: The athletes stored in the database as Players, who actually play the sports.
+* User: Anyone who uses this program for any reason.
 
 # Stories
+
+## User creates account
+
+As a user
+In order to begin using this program
+I want to be able to create an account
+
+Acceptance Criteria
+* User runs the program
+* User enters his username when prompted
+* Program does not recognize the user, asks him if he wants to create a new account
+* User accepts
+* User provides additional required details to the program
+* User's account is stored to the database
+
+## User signs in
+
+As a user
+In order to use this program
+I want to be able to sign in with my username
+
+Acceptance Criteria
+* User runs the program
+* User enters his username when prompted
+
+## User edits account
+
+As a user
+In order to update my information
+I want to be able to edit my account data
+
+Acceptance Criteria
+* User chooses to edit his own information from a PlayersController
+* User follows the command prompts to provide new information about his profile
+
+## User views all sports, teams, players
+
+As a user
+In order to know who and what is a part of the league
+I want to be able to view all sports, teams, and players in the league
+
+Acceptance Criteria
+* User enters the command to view all instances of sports, teams, or players
+* All public data regrading the user's selection is displayed to him
 
 ## Admin adds sports in his league
 
@@ -26,7 +71,7 @@ Acceptance Criteria:
 * Admin chooses to add a sport from the main menu
 * Admin is prompted for the name of the sport, how many teams are allowed, and how big each team can be
 
-## Admin manages sports in his leage
+## Admin manages sports in his league
 
 As an admin
 In order to manage existing sports

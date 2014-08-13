@@ -1,6 +1,8 @@
 RSpec.describe "Adding sports to the league", :integration do
+  let!(:player){Player.create(username: "Greg", first_name: "Greg", last_name: "Jones", age: 37, is_male: 1)}
+  
   context "with valid input" do
-    let!(:output){run_program_with_input("add", "Baseball", "9", "15", "4", "16", "end")}
+    let!(:output){run_program_with_input("Greg", "add", "Baseball", "9", "15", "4", "16", "end")}
 
     it "adds a new sport to the league's database" do
       sport = Sport.last

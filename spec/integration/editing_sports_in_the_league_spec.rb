@@ -1,7 +1,9 @@
 RSpec.describe "Editing existing sports in the league", :integration do
+  let!(:player){Player.create(username: "Greg", first_name: "Greg", last_name: "Jones", age: 37, is_male: 1)}
+  let!(:sport){Sport.create(name: "Baseball")}
+
   context "with valid input using names" do
-    let!(:sport){Sport.create(name: "Baseball")}
-    let!(:output){run_program_with_input("edit", "Baseball", "Name", "Football", "end")}
+    let!(:output){run_program_with_input("Greg", "edit", "Baseball", "Name", "Football", "end")}
 
     it "edits the sport in the league's database" do
       expect(Sport.count).to eq(1)
@@ -14,8 +16,7 @@ RSpec.describe "Editing existing sports in the league", :integration do
   end
 
   context "with valid input using indexes" do
-    let!(:sport){Sport.create(name: "Baseball")}
-    let!(:output){run_program_with_input("edit", "1", "1", "Football", "end")}
+    let!(:output){run_program_with_input("Greg", "edit", "1", "1", "Football", "end")}
 
     it "edits the sport in the league's database" do
       expect(Sport.count).to eq(1)
@@ -28,9 +29,8 @@ RSpec.describe "Editing existing sports in the league", :integration do
   end
 
   context "with invalid input" do
-    let!(:sport){Sport.create(name: "Baseball")}
-    let!(:output1){run_program_with_input("edit", "Baseball", "nam", "Football", "end")}
-    let!(:output2){run_program_with_input("edit", "1", "0", "Football", "end")}
+    let!(:output1){run_program_with_input("Greg", "edit", "Baseball", "nam", "Football", "end")}
+    let!(:output2){run_program_with_input("Greg", "edit", "1", "0", "Football", "end")}
 
     it "does not edit the sport in the league's database" do
       expect(Sport.count).to eq(1)

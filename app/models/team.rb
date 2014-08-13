@@ -1,8 +1,8 @@
 class Team < ActiveRecord::Base
   belongs_to :sport
-  has_many :players
-  has_one :captain, :class_name => "User"
-  # has_one :captain, :class_name => "User", -> {where(id: @captain_id)}
+  has_many :memberships
+  has_many :players, through: :memberships
+  has_one :captain, :class_name => "Membership"
 
   validates_presence_of :name
 
