@@ -85,6 +85,13 @@ EOS
       rescue
         item.destroy
       end
+    when "player"
+      if @parent.class.name.downcase == "team"
+        puts "Adding player to team"
+        membership = Membership.create(team: @parent, player: item)
+        @parent.memberships << membership
+        item.memberships << membership
+      end
     end
     # item.instance_variable_set("@#{parent.class.name.downcase}", @parent) if @parent
     if item.new_record?
@@ -179,10 +186,22 @@ EOS
   end
 
   def parent_ids(item)
-    if item.respond_to?(parent_id_name)
-      Array(item.send(parent_id_name))
+    is_players_on_a_team = false
+    if item.class.name.downcase == "player"
+      if @parent
+        is_players_on_a_team = true
+      end
+    end
+
+    if is_players_on_a_team
+      membership = Membership.where(:player_id => item.id, :team_id => @parent.id).first
+      membership ? Array(@parent.id) : []
     else
-      Array(item.send("#{@parent.class.name.downcase}s_id"))
+      if item.respond_to?(parent_id_name)
+        Array(item.send(parent_id_name))
+      else
+        Array(item.send("#{@parent.class.name.downcase}s_id"))
+      end
     end
   end
 

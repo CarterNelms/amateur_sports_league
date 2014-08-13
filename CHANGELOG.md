@@ -1,5 +1,9 @@
 # Changelog
 
+## Aud 13, commit 9
+
+  * Fixed bug that would not show players under teams
+
 ## Aud 13, commit 8
 
   * Fixed crashes when adding players
