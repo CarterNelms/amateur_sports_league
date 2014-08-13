@@ -1,6 +1,11 @@
 # Changelog
 
-# Aug 13, commit 7
+## Aud 13, commit 8
+
+  * Fixed crashes when adding players
+  * Fixed bug that would disregard a team's sport
+
+## Aug 13, commit 7
 
   * Polished before presentation
 

@@ -56,20 +56,25 @@ EOS
       end
       parameters.merge!(attribute.to_sym => value) if value.size > 0
     }
-    item = model.create(parameters)
     if @parent
       parent_type_name = "#{@parent.class.name.downcase}"
-      parent_type_plural_name = "#{parent_type_name}s"
+      parent_type_plural_name = "#{@parent.class.name.downcase}s"
       if model.column_names.include?("#{parent_type_name}_id")
-        puts "A"
-        item.instance_variable_set("@#{parent_type_name}", @parent)
+        parameters.merge!(parent_type_name.to_sym => @parent)
       elsif model.column_names.include?("#{parent_type_plural_name}_id")
-        puts "B"
-        item.instance_variable_set("@#{parent_type_plural_name}", item.instance_variable_get("@#{parent_type_plural_name}").concat(@parent))
+        parameters.merge!(parent_type_plural_name.to_sym => [@parent])
       end
-      puts item.instance_variable_get("@#{parent_type_name}").name
-      item.save!
     end
+    if creator
+      creator_type_name = "#{creator.class.name.downcase}"
+      creator_type_plural_name = "#{creator.class.name.downcase}s"
+      if model.column_names.include?("#{creator_type_name}_id")
+        parameters.merge!(creator_type_name.to_sym => creator)
+      elsif model.column_names.include?("#{creator_type_plural_name}_id")
+        parameters.merge!(creator_type_plural_name.to_sym => [creator])
+      end
+    end
+    item = model.create(parameters)
     case model.name.downcase
     when "team"
       membership = Membership.create(team: item, player: creator)
