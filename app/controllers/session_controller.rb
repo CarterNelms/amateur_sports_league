@@ -35,7 +35,7 @@ class SessionController
       if possible_new_controller
         @controller = possible_new_controller
       else
-        @controller = @controller.navigate_menu(@command) # unless Router.navigate_session(self, @command)
+        @controller = @controller.navigate_menu(@command, @user) # unless Router.navigate_session(self, @command)
       end
       @command = clean_gets.downcase if @controller
     end

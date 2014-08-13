@@ -1,5 +1,5 @@
 class Router
-  def self.navigate_sports_menu(controller, command)
+  def self.navigate_sports_menu(controller, command, user)
     case command
     when "add", "edit", "delete", "list"
       controller.send(command)
@@ -13,12 +13,28 @@ class Router
     controller
   end
 
-  def self.navigate_teams_menu(controller, command)
+  def self.navigate_teams_menu(controller, command, user)
+    case command
+    when "edit", "delete", "list"
+      controller.send(command)
+    when "add"
+      controller.send(command, nil, user)
+    when /\d+/
+      team = controller.get_by_index(command.to_i)
+      controller = PlayersController.new(team)
+      controller.list
+    else
+      puts "I don't know the '#{command}' command."
+    end
+    controller
+  end
+
+  def self.navigate_players_menu(controller, command, user)
     case command
     when "add", "edit", "delete", "list"
       controller.send(command)
     when /\d+/
-      sport = controller.get_by_index(command.to_i)
+      # sport = controller.get_by_index(command.to_i)
       # controller = PlayersController.new(sport)
       controller.list
     else

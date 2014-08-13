@@ -1,5 +1,9 @@
 # Changelog
 
+# Aug 13, commit 7
+
+  * Polished before presentation
+
 ## Aug 12, commit 6
   
   * Created players table and model

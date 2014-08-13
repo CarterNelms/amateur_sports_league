@@ -1,7 +1,7 @@
 class BaseController
 
-  def navigate_menu(command)
-    Router.send("navigate_#{type_name_plural}_menu", *[self, command])
+  def navigate_menu(command, user)
+    Router.send("navigate_#{type_name_plural}_menu", *[self, command, user])
   end
 
   def list
@@ -28,7 +28,7 @@ EOS
     selectable_items[index-1] if index.between?(1, selectable_items.size)
   end
 
-  def add(name=nil)
+  def add(name=nil, creator=nil)
     if name.nil?
       puts "What #{type_name} do you want to add?"
       name = clean_gets
@@ -56,8 +56,31 @@ EOS
       end
       parameters.merge!(attribute.to_sym => value) if value.size > 0
     }
-    parameters.merge!(@parent.class.name.downcase.to_sym => @parent) if @parent
     item = model.create(parameters)
+    if @parent
+      parent_type_name = "#{@parent.class.name.downcase}"
+      parent_type_plural_name = "#{parent_type_name}s"
+      if model.column_names.include?("#{parent_type_name}_id")
+        puts "A"
+        item.instance_variable_set("@#{parent_type_name}", @parent)
+      elsif model.column_names.include?("#{parent_type_plural_name}_id")
+        puts "B"
+        item.instance_variable_set("@#{parent_type_plural_name}", item.instance_variable_get("@#{parent_type_plural_name}").concat(@parent))
+      end
+      puts item.instance_variable_get("@#{parent_type_name}").name
+      item.save!
+    end
+    case model.name.downcase
+    when "team"
+      membership = Membership.create(team: item, player: creator)
+      creator.memberships << membership
+      item.memberships << membership
+      begin
+        item.captain = membership
+      rescue
+        item.destroy
+      end
+    end
     # item.instance_variable_set("@#{parent.class.name.downcase}", @parent) if @parent
     if item.new_record?
       puts item.errors.full_messages
@@ -131,7 +154,6 @@ EOS
     input = clean_gets
     parameters = {name: input}
     if @parent
-      parent_id_name = "#{@parent.class.name.downcase}_id"
       parameters.merge!(parent_id_name => @parent.id)
     end
     item = model.find_by(parameters)
@@ -147,11 +169,22 @@ EOS
   #   model.find_by(name: name)
   # end
 
+  def parent_id_name
+    "#{@parent.class.name.downcase}_id"
+  end
+
+  def parent_ids(item)
+    if item.respond_to?(parent_id_name)
+      Array(item.send(parent_id_name))
+    else
+      Array(item.send("#{@parent.class.name.downcase}s_id"))
+    end
+  end
+
   def items
     items_to_return = items_all
     if @parent
-      parent_id_name = "#{@parent.class.name.downcase}_id"
-      items_to_return.select!{|item| item.send(parent_id_name) == @parent.id}
+      items_to_return.select!{|item| parent_ids(item).include?(@parent.id)}
     end
     items_to_return
   end
